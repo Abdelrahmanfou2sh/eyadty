@@ -1,0 +1,57 @@
+import 'document_model.dart';
+
+class Patient {
+  final String? id;
+  final String name;
+  final String phoneNumber;
+  final String address;
+  final String medicalDiagnosis;
+  final List<Document> documents;
+
+  Patient({
+    this.id,
+    required this.name,
+    required this.phoneNumber,
+    required this.address,
+    required this.medicalDiagnosis,
+    this.documents = const [],
+  });
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'phoneNumber': phoneNumber,
+    'address': address,
+    'medicalDiagnosis': medicalDiagnosis,
+    'documents': documents.map((e) => e.toJson()).toList(),
+  };
+
+  factory Patient.fromJson(String id, Map<String, dynamic> json) => Patient(
+    id: id,
+    name: json['name'],
+    phoneNumber: json['phoneNumber'],
+    address: json['address'],
+    medicalDiagnosis: json['medicalDiagnosis'],
+    documents: json['documents'] == null
+        ? []
+        : (json['documents'] as List)
+        .map((e) => Document.fromJson(e))
+        .toList(),
+  );
+  Patient copyWith({
+    String? id,
+    String? name,
+    String? phoneNumber,
+    String? address,
+    String? medicalDiagnosis,
+    List<Document>? documents,
+  }) {
+    return Patient(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
+      medicalDiagnosis: medicalDiagnosis ?? this.medicalDiagnosis,
+      documents: documents ?? this.documents,
+    );
+  }
+}

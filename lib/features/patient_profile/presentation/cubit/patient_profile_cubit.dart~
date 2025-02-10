@@ -1,0 +1,87 @@
+import 'dart:io';
+import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eyadty/features/patient_profile/data/document_model.dart';
+import 'package:eyadty/features/patient_profile/data/patient_model.dart';
+import 'package:eyadty/features/patient_profile/presentation/cubit/patient_proflie_sate.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+class PatientProfileCubit extends Cubit<PatientProfileState> {
+  PatientProfileCubit() : super(PatientProfileInitial());
+
+  Future<void> createPatient(Patient patient) async {
+    emit(PatientProfileLoading());
+    try {
+      final docRef = await FirebaseFirestore.instance.collection('patients').add(patient.toJson());
+      final createdPatient = patient.copyWith(id: docRef.id);
+      emit(PatientCreated(createdPatient));
+    } catch (e) {
+      emit(PatientProfileError('Error creating patient: $e'));
+    }
+  }
+
+  Future<void> loadPatient(String patientId) async {
+    emit(PatientProfileLoading());
+    try {
+      final doc = await FirebaseFirestore.instance.collection('patients').doc(patientId).get();
+      if (doc.exists) {
+        final patient = Patient.fromJson(doc.id, doc.data()!);
+        emit(PatientProfileLoaded(patient));
+      } else {
+        emit(PatientProfileError('Patient not found'));
+      }
+    } catch (e) {
+      emit(PatientProfileError('Error loading patient: $e'));
+    }
+  }
+
+  Future<void> updatePatient(Patient patient) async {
+    emit(PatientProfileLoading());
+    try {
+      await FirebaseFirestore.instance.collection('patients').doc(patient.id).update(patient.toJson());
+      emit(PatientUpdated());
+    } catch (e) {
+      emit(PatientProfileError('Error updating patient: $e'));
+    }
+  }
+
+  Future<void> uploadDocument(String patientId) async {
+    emit(PatientProfileLoading());
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      String fileName = result.files.single.name;
+
+      try {
+        Reference storageRef = FirebaseStorage.instance.ref().child('patient_documents/$patientId/$fileName');
+        UploadTask uploadTask = storageRef.putFile(file);
+        await uploadTask.whenComplete(() => null);
+
+        String downloadUrl = await storageRef.getDownloadURL();
+        Document newDocument = Document(
+          documentName: fileName,
+          documentUrl: downloadUrl,
+          uploadDate: DateTime.now(),
+        );
+        await FirebaseFirestore.instance.collection('patients').doc(patientId).update({
+          'documents': FieldValue.arrayUnion([newDocument.toJson()])
+        });
+        emit(DocumentUploaded(newDocument));
+      } catch (e) {
+        emit(PatientProfileError('Error uploading document: $e'));
+      }
+    }
+  }
+  Future<void> loadPatients() async {
+    emit(PatientProfileLoading());
+    try {
+      final querySnapshot = await FirebaseFirestore.instance.collection('patients').get();
+      final patients = querySnapshot.docs.map((doc) => Patient.fromJson(doc.id, doc.data())).toList();
+      emit(PatientsLoaded(patients));
+    } catch (e) {
+      emit(PatientProfileError('Error loading patients: $e'));
+    }
+  }
+}

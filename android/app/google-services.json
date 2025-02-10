@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "555622250200",
+    "project_id": "eyadty-e839b",
+    "storage_bucket": "eyadty-e839b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555622250200:android:af8594fd43a6da2c0b89ad",
+        "android_client_info": {
+          "package_name": "com.example.eyadty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5hpnzM6qAZ4ibY8uxB5tR8DSnvX2vLTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

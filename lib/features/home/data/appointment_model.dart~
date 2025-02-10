@@ -1,0 +1,42 @@
+class AppointmentModel {
+  final String id;
+  final String patientName;
+  final String phoneNumber;
+  final String appointmentType;
+  final String date;
+  final String time;
+  final String status;
+
+  AppointmentModel({
+    required this.id,
+    required this.patientName,
+    required this.phoneNumber,
+    required this.appointmentType,
+    required this.date,
+    required this.time,
+    required this.status,
+  });
+
+  factory AppointmentModel.fromJson(String id, Map<String, dynamic> json) {
+    return AppointmentModel(
+      id: id,
+      patientName: json['patientName'],
+      phoneNumber: json['phoneNumber'],
+      appointmentType: json['appointmentType'],
+      date: json['date'],
+      time: json['time'],
+      status: json['status'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'patientName': patientName,
+      'phoneNumber': phoneNumber,
+      'appointmentType': appointmentType,
+      'date': date,
+      'time': time,
+      'status': status,
+    };
+  }
+}
