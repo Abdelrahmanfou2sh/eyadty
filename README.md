@@ -56,7 +56,7 @@ lib/
 
 1. استنساخ المشروع:
 ```bash
-git clone https://github.com/yourusername/eyadty.git
+git clone https://github.com/Abdelrahmanfou2sh/eyadty.git
 ```
 
 2. تثبيت التبعيات:
