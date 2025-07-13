@@ -90,3 +90,5 @@ flutter run
 ## الترخيص
 
 هذا المشروع مرخص تحت رخصة MIT.
+## screenshots
+![WhatsApp Image 2025-07-13 at 22 06 14_dbcf76d3](https://github.com/user-attachments/assets/5b545281-6b82-4c97-bedb-381e664fc3d4)
